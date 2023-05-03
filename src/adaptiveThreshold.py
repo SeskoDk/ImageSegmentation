@@ -65,7 +65,7 @@ class AdaptiveThreshold:
         # to blur the image, we have to average the kernel by the sum of the kernel elements
         kernel = kernel / np.sum(kernel)
 
-        # Create the image
+        # Create the blurred image
         blurred_image = np.zeros_like(self.image)
         padded_image = np.pad(self.image, ((center, center), (center, center)))
 
