@@ -51,7 +51,7 @@ class AdaptiveThreshold:
         return new_image
 
 
-    def adaptive_thresholdGaussian(self):
+    def adaptive_thresholdGaussian(self) -> np.ndarray:
         # create kernel
         kernel = np.zeros((self.blockSize, self.blockSize))
         center = self.blockSize // 2
