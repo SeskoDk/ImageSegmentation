@@ -1,3 +1,6 @@
 # ImageSegmentation
+The purpose of this repository is to evaluate and implement various procedures, with the aim of enhancing my understanding.
 
-![alt text](docs/thresholding_result.png)
+## Adaptive thresholding 
+<img src="docs/thresholding_result.png"  width="600" height="300">
+
