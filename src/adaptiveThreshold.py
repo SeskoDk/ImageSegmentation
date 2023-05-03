@@ -1,6 +1,7 @@
 import os
 import cv2
 import numpy as np
+from tqdm import tqdm
 import matplotlib.pyplot as plt
 
 
@@ -15,21 +16,25 @@ class AdaptiveThreshold:
                  image_path: str,
                  blockSize: int = 11,
                  C: int = 2,
-                 max_value: int = 255) -> None:
+                 max_value: int = 255,
+                 sigma: float = 2) -> None:
 
         if blockSize % 2 != 1 and blockSize <= 0:
             raise ValueError("block_size must be an odd positive integer")
+        elif sigma < 0:
+            raise ValueError("sigma must be an positive")
 
         self.image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
         self.blockSize = blockSize
         self.C = C
         self.max_value = max_value
+        self.sigma = sigma
 
     def adaptive_thresholdMean(self) -> np.ndarray:
         height, width = self.image.shape
         new_image = np.zeros(shape=self.image.shape, dtype=np.uint8)
 
-        for i in range(height):
+        for i in tqdm(range(height), total=height, desc="Average Thresholding"):
             for j in range(width):
 
                 left = np.maximum(0, i - self.blockSize // 2)
@@ -45,12 +50,37 @@ class AdaptiveThreshold:
 
         return new_image
 
-    def adaptive_thresholdGaussian(self) -> np.ndarray:
-        threshold_matrix = cv2.GaussianBlur(src=self.image, ksize=(self.blockSize, self.blockSize), sigmaX=0)
-        threshold_matrix = threshold_matrix - self.C
+
+    def adaptive_thresholdGaussian(self):
+        # create kernel
+        kernel = np.zeros((self.blockSize, self.blockSize))
+        center = self.blockSize // 2
+
+        for i in range(self.blockSize):
+            for j in range(self.blockSize):
+                x = i - center - 1
+                y = j - center - 1
+                kernel[i, j] = np.exp(-(x ** 2 + y ** 2) / (2 * self.sigma ** 2))
+
+        # to blur the image, we have to average the kernel by the sum of the kernel elements
+        kernel = kernel / np.sum(kernel)
+
+        # Create the image
+        blurred_image = np.zeros_like(self.image)
+        padded_image = np.pad(self.image, ((center, center), (center, center)))
+
+        # convolution with image
+        height, width = self.image.shape
+        for i in tqdm(range(center, height + center), total=height, desc="Gaussian Thresholding"):
+            for j in range(center, width + center):
+                patch = padded_image[i - center: i + center + 1, j - center: j + center + 1]
+                # R_i_j = H_i_j * F_i_j
+                blurred_image[i - center, j - center] = np.sum(patch * kernel)
+
+        blurred_image = blurred_image - self.C
 
         new_image = np.zeros(shape=self.image.shape, dtype=np.uint8)
-        new_image[self.image >= threshold_matrix] = self.max_value
+        new_image[self.image >= blurred_image] = self.max_value
 
         return new_image
 
