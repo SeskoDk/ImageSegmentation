@@ -3,4 +3,4 @@ The purpose of this repository is to evaluate and implement various procedures, 
 
 Completed subjects:
 * Adaptive thresholding 
-* Image sharpeing with kernels
+* Image sharpeing with kernels / Unsharp Masking
