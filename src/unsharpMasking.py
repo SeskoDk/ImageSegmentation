@@ -1,3 +1,4 @@
+import os
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
@@ -41,12 +42,11 @@ def image_sharpening(path: str, kernel_size: int = 3, alpha: float = 0.9):
 
 def comparison():
     path = "../docs/Lenna_(test_image).png"
-    kernel_size = 3
+    kernel_size = 5
     image = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
     blurred_image = box_blurring(path, kernel_size)
     detail = image - blurred_image
-    # sharped_image = image_sharpening(path, kernel_size)
-    sharped_image = image + 0.9 * detail
+    sharped_image = image_sharpening(path, kernel_size)
 
     fig, ax = plt.subplots(nrows=2, ncols=2, figsize=(10, 8))
     fig.suptitle("Image sharpening", fontsize=16)
@@ -58,6 +58,10 @@ def comparison():
     ax[1, 0].set_title('Details')
     ax[1, 1].imshow(sharped_image, cmap="gray")
     ax[1, 1].set_title('sharped image')
+
+    plot_path = os.path.dirname(path)
+    plot_path = os.path.join(plot_path, "sharpening_result.png")
+    plt.savefig(plot_path)
     plt.show()
 
 
