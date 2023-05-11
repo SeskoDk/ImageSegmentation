@@ -6,8 +6,8 @@ Completed subjects:
 * Image sharpeing with kernels / Unsharp Masking
 
 
-Dataset: \\
+Dataset: \
 [Tray Food Segmentation](https://www.kaggle.com/datasets/thezaza102/tray-food-segmentation)
 
-Data annotation tool: \\
+Data annotation tool: \
 [labelme](https://github.com/wkentaro/labelme)
