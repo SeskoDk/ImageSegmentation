@@ -33,7 +33,7 @@ def box_blurring(path: str, kernel_size: int = 3, method: str = "blurring") -> n
     return new_image[padding:-padding, padding:-padding]
 
 
-def image_sharpening(path: str, kernel_size: int = 3, alpha: float = 0.9):
+def image_sharpening(path: str, kernel_size: int = 3, alpha: float = 0.3):
     image = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
     blurred_image = box_blurring(path, kernel_size, method="sharpening")
     details = image - blurred_image
@@ -43,6 +43,7 @@ def image_sharpening(path: str, kernel_size: int = 3, alpha: float = 0.9):
 def comparison():
     path = "../docs/Lenna_(test_image).png"
     kernel_size = 5
+    save_img = False
     image = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
     blurred_image = box_blurring(path, kernel_size)
     detail = image - blurred_image
@@ -59,9 +60,10 @@ def comparison():
     ax[1, 1].imshow(sharped_image, cmap="gray")
     ax[1, 1].set_title('sharped image')
 
-    plot_path = os.path.dirname(path)
-    plot_path = os.path.join(plot_path, "sharpening_result.png")
-    plt.savefig(plot_path)
+    if save_img:
+        plot_path = os.path.dirname(path)
+        plot_path = os.path.join(plot_path, "sharpening_result.png")
+        plt.savefig(plot_path)
     plt.show()
 
 
